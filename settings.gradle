@@ -1,0 +1,3 @@
+include ':openCVVer410'
+include ':app'
+rootProject.name = "Project Detect Text"
