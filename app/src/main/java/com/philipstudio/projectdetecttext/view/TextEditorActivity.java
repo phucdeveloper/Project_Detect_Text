@@ -43,7 +43,6 @@ public class TextEditorActivity extends AppCompatActivity {
             convertBitmap = Bitmap.createBitmap(mat.cols(), mat.rows(), Bitmap.Config.ARGB_8888);
             Utils.matToBitmap(mat, convertBitmap);
             language = intent.getStringExtra("language");
-            showProgressDialogExtractingTextFromImage();
             doOCR(convertBitmap, language);
         }
     }
@@ -59,10 +58,16 @@ public class TextEditorActivity extends AppCompatActivity {
 
     private void doOCR(Bitmap bitmap, String language) {
         new Thread(() -> {
+            showProgressDialogExtractingTextFromImage();
             convertBitmap = scaleBitmapToImage(bitmap);
             MyTessOCR myTessOCR = new MyTessOCR(TextEditorActivity.this, language);
             String textResult = myTessOCR.getTextOCRResult(convertBitmap);
-            runOnUiThread(() -> txtDisplay.setText(textResult));
+            runOnUiThread(() -> {
+                if (textResult != null){
+                    progressDialog.dismiss();
+                    txtDisplay.setText(textResult);
+                }
+            });
             myTessOCR.onDestroy();
         }).start();
     }
