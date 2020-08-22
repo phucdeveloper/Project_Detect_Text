@@ -16,11 +16,11 @@ import java.io.OutputStream;
 
 public class MyTessOCR {
     private TessBaseAPI tessBaseAPI;
-    private String datapath;
+    private String dataPath;
 
     public MyTessOCR(Context context, String lang) {
-        datapath = Environment.getExternalStorageDirectory() + "/project/";
-        File dir = new File(datapath + "/tessdata/");
+        dataPath = Environment.getExternalStorageDirectory() + "/project/";
+        File dir = new File(dataPath + "/tessdata/");
         if (!dir.exists()) {
             Log.d("phuc", "in file doesn't exist");
             dir.mkdirs();
@@ -28,7 +28,7 @@ public class MyTessOCR {
         }
 
         tessBaseAPI = new TessBaseAPI();
-        tessBaseAPI.init(datapath, lang);
+        tessBaseAPI.init(dataPath, lang);
         tessBaseAPI.setPageSegMode(TessBaseAPI.PageSegMode.PSM_AUTO_ONLY);
     }
 
@@ -51,7 +51,7 @@ public class MyTessOCR {
         if (lang.equals("eng")) {
             try {
                 InputStream inputStream = manager.open("eng.traineddata");
-                OutputStream outputStream = new FileOutputStream(datapath + "/tessdata/" + "eng.traineddata");
+                OutputStream outputStream = new FileOutputStream(dataPath + "/tessdata/" + "eng.traineddata");
                 byte[] bytes = new byte[1024];
                 int read = inputStream.read(bytes);
 
@@ -66,7 +66,7 @@ public class MyTessOCR {
         } else if (lang.equals("vie")) {
             try {
                 InputStream inputStream = manager.open("vie.traineddata");
-                OutputStream outputStream = new FileOutputStream(datapath + "/tessdata/" + "vie.traineddata");
+                OutputStream outputStream = new FileOutputStream(dataPath + "/tessdata/" + "vie.traineddata");
                 byte[] bytes = new byte[1024];
                 int read = inputStream.read(bytes);
 
@@ -82,7 +82,7 @@ public class MyTessOCR {
         else if (lang.equals("chi_tra")){
             try {
                 InputStream inputStream = manager.open("chi_tra.traineddata");
-                OutputStream outputStream = new FileOutputStream(datapath + "/tessdata/" + "chi_tra.traineddata");
+                OutputStream outputStream = new FileOutputStream(dataPath + "/tessdata/" + "chi_tra.traineddata");
                 byte[] bytes = new byte[1024];
                 int read = inputStream.read(bytes);
 

@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "56845679915",
+    "firebase_url": "https://project-detect-text.firebaseio.com",
+    "project_id": "project-detect-text",
+    "storage_bucket": "project-detect-text.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:56845679915:android:a2211d415de1834030d96e",
+        "android_client_info": {
+          "package_name": "com.philipstudio.projectdetecttext"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "56845679915-8l0bofat9qfrfn25jkmm2hq9437co5jn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDS1Mzyt3M_v8LKKrm_pc8WzBQuTzJqNFc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "56845679915-8l0bofat9qfrfn25jkmm2hq9437co5jn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

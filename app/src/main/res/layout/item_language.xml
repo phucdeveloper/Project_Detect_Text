@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView
+    android:gravity="center_vertical"
+    android:id="@android:id/text1"
+    android:paddingEnd="16dp"
+    android:paddingStart="16dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="30dp"
+    android:background="@drawable/custom_spinner"
+    android:text="@string/app_name"
+    android:textColor="#212121"
+    android:textSize="15sp" />

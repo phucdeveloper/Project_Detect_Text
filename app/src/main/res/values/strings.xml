@@ -1,11 +1,13 @@
 <resources>
     <string name="app_name">Project Detect Text</string>
-    <string name="save_image">Lưu ảnh</string>
-    <string name="select_image_quality">Chọn chất lượng ảnh</string>
+    <string name="save_image">Save image</string>
+    <string name="select_image_quality">Choose photo quality</string>
     <string name="sd">720 x 576 px</string>
     <string name="hd">1280 x 720 px</string>
     <string name="full_hd">1920 x 1080 px</string>
-    <string name="ok">Ok</string>
-    <string name="cancel">huỷ</string>
-    <string name="input_name_file">Nhập tên file</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="input_name_file">Input name file</string>
+    <string name="create_new_file_pdf">Create new file PDF</string>
+    <string name="render">render</string>
 </resources>
