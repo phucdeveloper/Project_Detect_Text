@@ -13,10 +13,10 @@
 
     <RelativeLayout
         android:background="@android:drawable/screen_background_dark_transparent"
-        android:gravity="center_vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <ImageButton
+            android:layout_centerVertical="true"
             android:id="@+id/imagebutton_close"
             android:layout_margin="10dp"
             android:background="@null"
@@ -25,6 +25,7 @@
             android:layout_height="wrap_content"/>
 
         <Spinner
+            android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
             android:layout_margin="10dp"
             android:background="@android:color/transparent"
@@ -71,4 +72,10 @@
             android:layout_width="40dp"
             android:layout_height="40dp"/>
     </RelativeLayout>
+
+<!--    <com.theartofdev.edmodo.cropper.CropImageView-->
+<!--        android:layout_gravity="center"-->
+<!--        android:id="@+id/crop_image_view"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="300dp"/>-->
 </FrameLayout>

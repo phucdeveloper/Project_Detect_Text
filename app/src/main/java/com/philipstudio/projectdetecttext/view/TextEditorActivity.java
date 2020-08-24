@@ -1,25 +1,33 @@
 package com.philipstudio.projectdetecttext.view;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.LightingColorFilter;
-import android.graphics.Paint;
-import android.graphics.pdf.PdfDocument;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.Gravity;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.philipstudio.projectdetecttext.callback.OnSendDataImageListener;
 import com.philipstudio.projectdetecttext.util.MyTessOCR;
 import com.philipstudio.projectdetecttext.R;
 import com.philipstudio.projectdetecttext.util.ProcessImage;
@@ -28,22 +36,25 @@ import org.opencv.android.Utils;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
 
-import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
-public class TextEditorActivity extends AppCompatActivity {
+public class TextEditorActivity extends AppCompatActivity implements OnSendDataImageListener {
 
+    private static final int REQUEST_CODE = 123;
     ProgressDialog progressDialog;
     Button btnRender;
-    TextView txtDisplay;
-    ImageView imgImage;
+    EditText editInput;
+    Spinner spinnerFont, spinnerSize;
 
 
     String language, nameFile;
     Bitmap convertBitmap;
     ProcessImage processImage;
     boolean isImageBlur = false;
+    String[] font = {"Calibri", "Sanna", "Yessica", "Hio"};
+    String[] size = {"10f", "15.f", "17f", "20", "18"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,13 +78,16 @@ public class TextEditorActivity extends AppCompatActivity {
             if (isImageBlur) {
                 showDialogNotificationImageBlur(TextEditorActivity.this);
             } else {
-                imgImage.setImageBitmap(convertBitmap);
                 showProgressDialogExtractingTextFromImage();
                 doOCR(convertBitmap, language);
             }
+
+            setUpSpinnerFont(spinnerFont, font);
+
+            setUpSpinnerSize(spinnerSize);
+
         }
     }
-
 
     private void showProgressDialogExtractingTextFromImage() {
         progressDialog.setMessage("Extracting text from image...");
@@ -88,8 +102,7 @@ public class TextEditorActivity extends AppCompatActivity {
             boolean isDetectBlur = processImage.detectImageBlur(bitmap);
             Log.d("phuc", isDetectBlur + " ");
             if (isDetectBlur) {
-                LightingColorFilter lightingColorFilter = new LightingColorFilter(0x77777777, 0x77777777);
-                imgImage.setColorFilter(lightingColorFilter);
+
             }
             if (isDetectDark) {
                 convertBitmap = processImage.scaleBitmapToImage(bitmap);
@@ -102,10 +115,22 @@ public class TextEditorActivity extends AppCompatActivity {
                 if (textResult != null) {
                     progressDialog.dismiss();
                     Log.d("phuc", textResult);
-                    txtDisplay.setText(textResult);
+                    editInput.setText(textResult);
 
                     btnRender.setOnClickListener(view -> {
-                        showDialogCreateFilePDF(TextEditorActivity.this, textResult);
+                        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.M){
+                            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
+                                    PackageManager.PERMISSION_GRANTED){
+                                showDialogCreateFilePDF(TextEditorActivity.this, textResult);
+                            }
+                            else{
+                                String[] permission = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
+                                requestPermissions(permission, REQUEST_CODE);
+                            }
+                        }
+                        else{
+                            showDialogCreateFilePDF(TextEditorActivity.this, textResult);
+                        }
                     });
                 }
             });
@@ -113,20 +138,31 @@ public class TextEditorActivity extends AppCompatActivity {
         }).start();
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        switch (requestCode){
+            case REQUEST_CODE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    String text = editInput.getText().toString();
+                    showDialogCreateFilePDF(TextEditorActivity.this, text);
+                }
+                else{
+                    Toast.makeText(TextEditorActivity.this, "Permission Denied", Toast.LENGTH_SHORT).show();
+                }
+        }
+    }
+
     private void showDialogCreateFilePDF(Context context, String content) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("Extract File PDF");
-        builder.setView(R.layout.layout_dialog_create_file_pdf);
-
-        AlertDialog alertDialog = builder.create();
-        alertDialog.getWindow().getAttributes().gravity = Gravity.CENTER;
-        alertDialog.getWindow().setLayout(Toolbar.LayoutParams.MATCH_PARENT, Toolbar.LayoutParams.WRAP_CONTENT);
+        builder.setTitle("Create New File PDF");
+        builder.setMessage("Do you want to create new PDF ?");
 
         builder.setPositiveButton("Create", (dialogInterface, i) -> {
-            String name = System.currentTimeMillis() + ".pdf";
             try {
-                createFilePDF(name, content);
-            } catch (IOException e) {
+                createFileNewPDF(content);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         });
@@ -134,6 +170,10 @@ public class TextEditorActivity extends AppCompatActivity {
         builder.setNegativeButton("Cancel", (dialogInterface, i) -> {
             dialogInterface.dismiss();
         });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.getWindow().getAttributes().gravity = Gravity.CENTER;
+        alertDialog.getWindow().setLayout(Toolbar.LayoutParams.MATCH_PARENT, Toolbar.LayoutParams.WRAP_CONTENT);
 
         alertDialog.show();
     }
@@ -158,28 +198,41 @@ public class TextEditorActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    private void createFilePDF(String nameFile, String content) throws IOException {
-        PdfDocument pdfDocument = new PdfDocument();
-        PdfDocument.PageInfo pageInfo = new PdfDocument
-                .PageInfo.Builder(300, 600, 1).create();
-        PdfDocument.Page page = pdfDocument.startPage(pageInfo);
+    private void createFileNewPDF(String content){
+        Document document = new Document();
+        String mFileName = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String mFilePath = Environment.getExternalStorageDirectory().getPath() + "/" + mFileName + ".pdf";
 
-        int x = 10, y = 25;
-        Paint paint = new Paint();
-        page.getCanvas().drawText(content, x, y, paint);
-        pdfDocument.finishPage(page);
+        try{
+            PdfWriter.getInstance(document, new FileOutputStream(mFilePath));
+            document.open();
+            document.addLanguage("vie");
+            document.add(new Paragraph(content));
+            Toast.makeText(TextEditorActivity.this, mFileName + " created at " + mFilePath, Toast.LENGTH_SHORT).show();
+            document.close();
+        }
+        catch (Exception e){
+            Toast.makeText(TextEditorActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
 
-        String pathFile = Environment.getExternalStorageDirectory().getPath() + "/MyFilePDF/" + nameFile + ".pdf";
-        File file = new File(pathFile);
-        pdfDocument.writeTo(new FileOutputStream(file));
-        pdfDocument.close();
+    private void setUpSpinnerFont(Spinner spinner, String[] name){
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(TextEditorActivity.this, android.R.layout.simple_list_item_1, name);
+        spinner.setAdapter(arrayAdapter);
+    }
+
+    private void setUpSpinnerSize(Spinner spinner){
+        String[] size = {{"10.5", "13.6", "10", "1.2", "1.6"};
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(TextEditorActivity.this, android.R.layout.simple_list_item_1, size);
+        spinner.setAdapter(arrayAdapter);
     }
 
     private void initView() {
         progressDialog = new ProgressDialog(this);
         btnRender = findViewById(R.id.button_render);
         processImage = new ProcessImage();
-        txtDisplay = findViewById(R.id.text_view);
-        imgImage = findViewById(R.id.image_view);
+        editInput = findViewById(R.id.edit_text);
+        spinnerFont = findViewById(R.id.spinner_font);
+        spinnerSize = findViewById(R.id.spinner_size);
     }
 }

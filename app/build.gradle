@@ -37,13 +37,19 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
+    //library tesseract for ocr
     implementation 'com.rmtheis:tess-two:9.1.0'
+
+    //library use request permission
     implementation 'com.karumi:dexter:6.2.1'
 
     //library create file pdf
     implementation 'com.itextpdf:itextg:5.5.10'
 
+    //library editor
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     implementation 'com.github.chinalwb:are:0.1.7'
+
+    api 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
 }
 apply plugin: 'com.google.gms.google-services'

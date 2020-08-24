@@ -67,7 +67,7 @@ public class ProcessImage {
         Log.d("phuc", result);
         String[] data = result.split(",");
         double number = Double.parseDouble(data[0]);
-        if (number < 100){
+        if (number < 30){
             isBlur = true;
         }
         return isBlur;

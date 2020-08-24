@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
+    android:orientation="vertical"
     android:id="@+id/recycletVire_list_dilpf"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -7,5 +8,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".view.ListFilePdfActivity">
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.appcompat.widget.Toolbar
+        android:onClick="OnNavigationToolbarClick"
+        app:title="List file PDF"
+        app:navigationIcon="@drawable/ic_baseline_arrow_back"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <View
+        android:background="#3E3D3D"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview_list_file_pdf"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</LinearLayout>

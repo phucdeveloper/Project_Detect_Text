@@ -12,7 +12,6 @@ import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.SurfaceView;
 import android.view.View;
@@ -33,6 +32,7 @@ import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.philipstudio.projectdetecttext.R;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.InstallCallbackInterface;
@@ -60,8 +60,9 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
     JavaCameraView javaCameraView;
     Button btnTakePhoto;
     ImageButton imgButtonClose;
-    ImageView imgOpenGallery;
+    ImageView imgOpenGallery, imgListFilePDF;
     Spinner spinnerLanguage;
+    //   CropImageView cropImageView;
 
     Camera camera;
     Mat imgGrey, mRgba, imgCanny, mByte;
@@ -117,6 +118,11 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
         btnTakePhoto.setOnClickListener(view -> captureImage());
 
         imgOpenGallery.setOnClickListener(view -> requestPermission());
+
+        new Thread(() -> runOnUiThread(() -> imgListFilePDF.setOnClickListener(view -> {
+            Intent intent = new Intent(CameraActivity.this, ListFilePdfActivity.class);
+            startActivity(intent);
+        }))).start();
     }
 
     @Override
@@ -137,12 +143,6 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
         } else {
             javaCameraView.enableView();
             javaCameraView.updateMatrix();
-        }
-
-        if (nameFileImage != null){
-            Intent intent = new Intent(CameraActivity.this, TextEditorActivity.class);
-            intent.putExtra("nameFile", nameFileImage);
-            startActivity(intent);
         }
     }
 
@@ -171,6 +171,11 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
     @Override
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
         mRgba = inputFrame.rgba();
+        new Thread(() -> {
+            bitmap = Bitmap.createBitmap(mByte.cols(), mByte.rows(), Bitmap.Config.ARGB_8888);
+            Utils.matToBitmap(mRgba, bitmap);
+            //   runOnUiThread(() -> cropImageView.setImageBitmap(bitmap));
+        }).start();
         Imgproc.cvtColor(mRgba, mByte, Imgproc.COLOR_BGR2RGB);
         return mRgba;
     }
@@ -179,7 +184,7 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE){
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
 
         }
     }
@@ -264,7 +269,6 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
 
         if (resultCode == RESULT_OK && requestCode == REQUEST_CODE && data != null) {
             Uri uri = data.getData();
-            nameFileImage = uri.toString();
         }
     }
 
@@ -276,7 +280,7 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
                 storageReference.getDownloadUrl().addOnSuccessListener(uri -> {
                     String link = uri.toString();
                     listDataLanguage.add(link);
-                    Log.d("phuc", link);
+                    Log.d("size", listDataLanguage.size() + " ");
                 });
             }
         });
@@ -288,6 +292,8 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
         imgButtonClose = findViewById(R.id.imagebutton_close);
         imgOpenGallery = findViewById(R.id.image_view_open_gallery);
         btnTakePhoto = findViewById(R.id.button_take_a_photo);
+        //    cropImageView = findViewById(R.id.crop_image_view);
+        imgListFilePDF = findViewById(R.id.image_view_list_file_pdf);
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHH_mm_ss");
         currentDateAndTime = sdf.format(new Date());
