@@ -9,6 +9,8 @@
     <string name="cancel">Cancel</string>
     <string name="input_name_file">Input name file</string>
     <string name="create_new_file_pdf">Create new file PDF</string>
-    <string name="render">render</string>
+    <string name="render">Render</string>
     <string name="enter_your_text_here">Enter your text here...</string>
+    <string name="text_color">Text color</string>
+    <string name="size">Size</string>
 </resources>

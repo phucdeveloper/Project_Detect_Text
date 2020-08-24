@@ -51,11 +51,7 @@ public class FilePDFAdapter extends RecyclerView.Adapter<FilePDFAdapter.ViewHold
             txtNamePath = itemView.findViewById(R.id.item_textview_name_path);
 
             itemView.setOnClickListener(view -> {
-                int position = getAdapterPosition();
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setDataAndType(Uri.fromFile(arrayList.get(position)), "application/pdf");
-                intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                view.getContext().startActivity(intent);
+
             });
         }
     }

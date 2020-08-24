@@ -1,57 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorBlue">
-
-        <RelativeLayout
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/colorBlue">
 
-            <TextView
-                android:layout_width="wrap_content"
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="@string/app_name"
+                        android:textColor="#fff"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:background="@drawable/button_render"
+                        android:textAllCaps="false"
+                        android:id="@+id/button_render"
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_margin="8dp"
+                        android:text="@string/render" />
+                </RelativeLayout>
+            </androidx.appcompat.widget.Toolbar>
+
+            <EditText
+
+                android:textColor="#f000"
+                android:textSize="16sp"
+                android:id="@+id/edit_text"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:text="@string/app_name"
-                android:textColor="#fff"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:layout_margin="10dp"
+                android:background="@null"
+                android:hint="@string/enter_your_text_here"/>
 
-            <Button
-                android:id="@+id/button_render"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_margin="8dp"
-                android:background="@drawable/custom_button_render"
-                android:text="@string/render" />
-        </RelativeLayout>
-    </androidx.appcompat.widget.Toolbar>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
-    <EditText
-        android:layout_below="@id/toolbar"
-        android:id="@+id/edit_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:background="@null"
-        android:hint="@string/enter_your_text_here"/>
+    <include
+        layout="@layout/layout_menu_editor"/>
 
-    <FrameLayout
-        android:layout_above="@+id/horizontal_scroll_view"
-        android:id="@+id/container"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"/>
-        <include
-            android:layout_alignParentBottom="true"
-            layout="@layout/layout_menu_editor"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-</RelativeLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

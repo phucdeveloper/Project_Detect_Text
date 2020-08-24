@@ -51,5 +51,8 @@ dependencies {
     implementation 'com.github.chinalwb:are:0.1.7'
 
     api 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
+
+    //library color picker
+    implementation 'com.github.duanhong169:colorpicker:1.1.6'
 }
 apply plugin: 'com.google.gms.google-services'

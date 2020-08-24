@@ -10,9 +10,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <ImageView
+            android:layout_gravity="center_vertical"
             android:src="@drawable/ic_baseline_picture_as_pdf_red"
-            android:layout_width="60dp"
-            android:layout_height="60dp"/>
+            android:layout_width="40dp"
+            android:layout_height="40dp"/>
         <RelativeLayout
             android:layout_gravity="center_vertical"
             android:orientation="vertical"

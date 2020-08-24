@@ -1,10 +1,10 @@
 package com.philipstudio.projectdetecttext.view;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.app.ProgressDialog;
@@ -12,22 +12,26 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.net.Uri;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
-import com.philipstudio.projectdetecttext.callback.OnSendDataImageListener;
 import com.philipstudio.projectdetecttext.util.MyTessOCR;
 import com.philipstudio.projectdetecttext.R;
 import com.philipstudio.projectdetecttext.util.ProcessImage;
@@ -40,21 +44,28 @@ import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class TextEditorActivity extends AppCompatActivity implements OnSendDataImageListener {
+import top.defaults.colorpicker.ColorPickerView;
+
+public class TextEditorActivity extends AppCompatActivity {
 
     private static final int REQUEST_CODE = 123;
     ProgressDialog progressDialog;
-    Button btnRender;
+    Button btnRender, btnSize;
     EditText editInput;
-    Spinner spinnerFont, spinnerSize;
-
+    LinearLayout linearLayout;
+    BottomSheetBehavior<LinearLayout> bottomSheetBehavior;
+    ImageView imgLayout, imgUndo, imgRedo, imgStyleBold, imgBold, imgStyleItalic,
+            imgItalic, imgUnderline, imgStyleUnderline, imgOpenGallery;
+    Spinner spinnerFont;
+    ColorPickerView colorPickerView;
 
     String language, nameFile;
     Bitmap convertBitmap;
     ProcessImage processImage;
     boolean isImageBlur = false;
-    String[] font = {"Calibri", "Sanna", "Yessica", "Hio"};
-    String[] size = {"10f", "15.f", "17f", "20", "18"};
+    private static final int INITIAL_COLOR = 0xFF000000;
+
+    String[] arrayFont = {"Normal", "Monospace", "Sans", "Serif"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,12 +92,74 @@ public class TextEditorActivity extends AppCompatActivity implements OnSendDataI
                 showProgressDialogExtractingTextFromImage();
                 doOCR(convertBitmap, language);
             }
-
-            setUpSpinnerFont(spinnerFont, font);
-
-            setUpSpinnerSize(spinnerSize);
-
         }
+
+        setUpSpinnerFont(arrayFont);
+
+        setUpColorPicker();
+
+        imgLayout.setOnClickListener(listener);
+        imgRedo.setOnClickListener(listener);
+        imgUndo.setOnClickListener(listener);
+        btnSize.setOnClickListener(listener);
+        imgStyleBold.setOnClickListener(listener);
+        imgStyleItalic.setOnClickListener(listener);
+        imgBold.setOnClickListener(listener);
+        imgItalic.setOnClickListener(listener);
+        imgOpenGallery.setOnClickListener(listener);
+
+        spinnerFont.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+    }
+
+    private View.OnClickListener listener = new View.OnClickListener() {
+        @RequiresApi(api = Build.VERSION_CODES.O)
+        @Override
+        public void onClick(View view) {
+            switch (view.getId()){
+                case R.id.image_view_layout:
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                    break;
+                case R.id.image_view_redo:
+                    Toast.makeText(TextEditorActivity.this, "Redo!!!", Toast.LENGTH_SHORT).show();
+                    break;
+                case R.id.image_view_undo:
+                    Toast.makeText(TextEditorActivity.this, "Undo!!!", Toast.LENGTH_SHORT).show();
+                    break;
+                case R.id.image_view_style_bold:
+                case R.id.image_view_bold:
+                    editInput.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+                    break;
+                case R.id.image_view_style_italic:
+                case R.id.image_view_italic:
+                    editInput.setTypeface(Typeface.defaultFromStyle(Typeface.ITALIC));
+                    break;
+                case R.id.image_view_style_underline:
+                    break;
+                case R.id.image_view_open_gallery:
+                    openGallery();
+                    break;
+                case R.id.button_size:
+                    editInput.setTextSize(30.0f);
+                    break;
+            }
+        }
+    };
+
+    private void openGallery(){
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*");
+        startActivityForResult(intent, REQUEST_CODE);
     }
 
     private void showProgressDialogExtractingTextFromImage() {
@@ -198,6 +271,12 @@ public class TextEditorActivity extends AppCompatActivity implements OnSendDataI
         alertDialog.show();
     }
 
+    private void setUpColorPicker(){
+        colorPickerView.subscribe((color, fromUser, shouldPropagate) -> editInput.setTextColor(color));
+
+        colorPickerView.setInitialColor(INITIAL_COLOR);
+    }
+
     private void createFileNewPDF(String content){
         Document document = new Document();
         String mFileName = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -216,15 +295,9 @@ public class TextEditorActivity extends AppCompatActivity implements OnSendDataI
         }
     }
 
-    private void setUpSpinnerFont(Spinner spinner, String[] name){
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(TextEditorActivity.this, android.R.layout.simple_list_item_1, name);
-        spinner.setAdapter(arrayAdapter);
-    }
-
-    private void setUpSpinnerSize(Spinner spinner){
-        String[] size = {{"10.5", "13.6", "10", "1.2", "1.6"};
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(TextEditorActivity.this, android.R.layout.simple_list_item_1, size);
-        spinner.setAdapter(arrayAdapter);
+    private void setUpSpinnerFont(String[] strings){
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(TextEditorActivity.this, android.R.layout.simple_list_item_1, strings);
+        spinnerFont.setAdapter(arrayAdapter);
     }
 
     private void initView() {
@@ -232,7 +305,19 @@ public class TextEditorActivity extends AppCompatActivity implements OnSendDataI
         btnRender = findViewById(R.id.button_render);
         processImage = new ProcessImage();
         editInput = findViewById(R.id.edit_text);
+        linearLayout = findViewById(R.id.layout_bottom_sheet);
+        imgLayout = findViewById(R.id.image_view_layout);
+        imgUndo = findViewById(R.id.image_view_undo);
+        imgRedo = findViewById(R.id.image_view_redo);
         spinnerFont = findViewById(R.id.spinner_font);
-        spinnerSize = findViewById(R.id.spinner_size);
+        imgStyleBold = findViewById(R.id.image_view_style_bold);
+        imgStyleItalic = findViewById(R.id.image_view_style_italic);
+        btnSize = findViewById(R.id.button_size);
+        colorPickerView = findViewById(R.id.color_picker_view);
+        imgOpenGallery = findViewById(R.id.image_view_open_gallery);
+        imgBold = findViewById(R.id.image_view_bold);
+        imgItalic = findViewById(R.id.image_view_italic);
+
+        bottomSheetBehavior = BottomSheetBehavior.from(linearLayout);
     }
 }
