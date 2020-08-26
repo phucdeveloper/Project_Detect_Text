@@ -43,8 +43,16 @@
                 </RelativeLayout>
             </androidx.appcompat.widget.Toolbar>
 
-            <EditText
+            <ImageView
+                android:layout_margin="10dp"
+                android:id="@+id/image_view_image"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
+            <EditText
+                android:textColorLink="#198BE6"
+                android:linksClickable="true"
+                android:autoLink="web"
                 android:textColor="#f000"
                 android:textSize="16sp"
                 android:id="@+id/edit_text"

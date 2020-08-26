@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.os.Environment;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.googlecode.tesseract.android.TessBaseAPI;
@@ -28,7 +29,25 @@ public class MyTessOCR {
         }
 
         tessBaseAPI = new TessBaseAPI();
-        tessBaseAPI.init(dataPath, lang);
+        if (!TextUtils.isEmpty(lang)) {
+            tessBaseAPI.init(dataPath, lang);
+        } else {
+            tessBaseAPI.init(dataPath, "eng");
+        }
+        tessBaseAPI.setPageSegMode(TessBaseAPI.PageSegMode.PSM_AUTO_ONLY);
+    }
+
+    public MyTessOCR(Context context) {
+        dataPath = Environment.getExternalStorageDirectory() + "/project/";
+        File dir = new File(dataPath + "/tessdata/");
+        if (!dir.exists()) {
+            Log.d("phuc", "in file doesn't exist");
+            dir.mkdirs();
+            copyFile(context, "eng");
+        }
+
+        tessBaseAPI = new TessBaseAPI();
+        tessBaseAPI.init(dataPath, "eng");
         tessBaseAPI.setPageSegMode(TessBaseAPI.PageSegMode.PSM_AUTO_ONLY);
     }
 
@@ -78,8 +97,7 @@ public class MyTessOCR {
             } catch (IOException e) {
                 Log.d("phuc", "couldn't copy with the following error : " + e.toString());
             }
-        }
-        else if (lang.equals("chi_tra")){
+        } else if (lang.equals("chi_tra")) {
             try {
                 InputStream inputStream = manager.open("chi_tra.traineddata");
                 OutputStream outputStream = new FileOutputStream(dataPath + "/tessdata/" + "chi_tra.traineddata");

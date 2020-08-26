@@ -32,7 +32,6 @@ import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.philipstudio.projectdetecttext.R;
-import com.theartofdev.edmodo.cropper.CropImageView;
 
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.InstallCallbackInterface;
@@ -62,7 +61,6 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
     ImageButton imgButtonClose;
     ImageView imgOpenGallery, imgListFilePDF;
     Spinner spinnerLanguage;
-    //   CropImageView cropImageView;
 
     Camera camera;
     Mat imgGrey, mRgba, imgCanny, mByte;
@@ -174,7 +172,6 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
         new Thread(() -> {
             bitmap = Bitmap.createBitmap(mByte.cols(), mByte.rows(), Bitmap.Config.ARGB_8888);
             Utils.matToBitmap(mRgba, bitmap);
-            //   runOnUiThread(() -> cropImageView.setImageBitmap(bitmap));
         }).start();
         Imgproc.cvtColor(mRgba, mByte, Imgproc.COLOR_BGR2RGB);
         return mRgba;
@@ -269,6 +266,9 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
 
         if (resultCode == RESULT_OK && requestCode == REQUEST_CODE && data != null) {
             Uri uri = data.getData();
+            Intent intent = new Intent(CameraActivity.this, TextEditorActivity.class);
+            intent.putExtra("data", uri.toString());
+            startActivity(intent);
         }
     }
 
@@ -292,7 +292,6 @@ public class CameraActivity extends AppCompatActivity implements CameraBridgeVie
         imgButtonClose = findViewById(R.id.imagebutton_close);
         imgOpenGallery = findViewById(R.id.image_view_open_gallery);
         btnTakePhoto = findViewById(R.id.button_take_a_photo);
-        //    cropImageView = findViewById(R.id.crop_image_view);
         imgListFilePDF = findViewById(R.id.image_view_list_file_pdf);
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHH_mm_ss");

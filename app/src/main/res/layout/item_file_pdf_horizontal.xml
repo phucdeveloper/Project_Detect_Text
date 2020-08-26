@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    android:gravity="center_horizontal">
+
+    <ImageView
+        android:background="@drawable/ic_baseline_picture_as_pdf_red"
+        android:id="@+id/item_image_view_image"
+        android:layout_width="60dp"
+        android:layout_height="60dp"/>
+
+    <TextView
+        android:layout_marginBottom="5dp"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:layout_marginTop="5dp"
+        android:id="@+id/item_textview_name_file"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/_20200825_172630_pdf"
+        android:textAlignment="center" />
+
+</LinearLayout>

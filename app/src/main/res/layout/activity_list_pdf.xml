@@ -1,25 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     android:orientation="vertical"
     android:id="@+id/recycletVire_list_dilpf"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".view.ListFilePdfActivity">
-    <androidx.appcompat.widget.Toolbar
-        android:onClick="OnNavigationToolbarClick"
-        app:title="List file PDF"
-        app:navigationIcon="@drawable/ic_baseline_arrow_back"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-    <View
-        android:background="#3E3D3D"
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"/>
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerview_list_file_pdf"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-</LinearLayout>
+        android:layout_height="wrap_content">
+        <androidx.appcompat.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:onClick="OnImageViewComeBackClick"
+                    android:src="@drawable/ic_baseline_arrow_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <TextView
+                    android:layout_weight="1"
+                    android:textColor="@color/colorBackground"
+                    android:textSize="18sp"
+                    android:layout_marginStart="15dp"
+                    android:text="@string/list_file_pdf"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"/>
+                <ImageView
+                    android:layout_marginEnd="15dp"
+                    android:src="@drawable/ic_baseline_search"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+        </androidx.appcompat.widget.Toolbar>
+
+        <View
+            android:background="#3E3D3D"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"/>
+
+        <LinearLayout
+            android:gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/text_view_name_path"
+                android:singleLine="true"
+                android:ellipsize="start"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:padding="10dp"
+                android:text="@string/app_name"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"/>
+            <ImageView
+                android:id="@+id/image_view_change_layout"
+                android:src="@drawable/ic_baseline_apps"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <ImageView
+                android:id="@+id/image_view_menu"
+                android:layout_margin="10dp"
+                android:src="@drawable/ic_baseline_more_vert"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <View
+            android:background="#3E3D3D"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerview_list_file_pdf"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
+
+    <include layout="@layout/layout_bottomsheet_create_folder"/>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

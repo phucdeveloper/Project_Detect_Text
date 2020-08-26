@@ -13,4 +13,20 @@
     <string name="enter_your_text_here">Enter your text here...</string>
     <string name="text_color">Text color</string>
     <string name="size">Size</string>
+    <string name="choose_size">Choose size</string>
+    <string name="ok">Ok</string>
+    <string name="_24sp">24sp</string>
+    <string name="_22sp">22sp</string>
+    <string name="_20sp">20sp</string>
+    <string name="_18sp">18sp</string>
+    <string name="_16sp">16sp</string>
+    <string name="_14sp">14sp</string>
+    <string name="_12sp">12sp</string>
+    <string name="enter_your_size">Enter your size</string>
+    <string name="list_file_pdf">List file PDF</string>
+    <string name="_20200825_172630_pdf">20200825_172630.pdf</string>
+    <string name="sorted_by">Sorted by</string>
+    <string name="create_folder">Create folder</string>
+    <string name="input_name_folder">Input name folder</string>
+    <string name="new_folder">New folder</string>
 </resources>
